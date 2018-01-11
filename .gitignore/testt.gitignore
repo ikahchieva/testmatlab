@@ -1,0 +1,407 @@
+% _spline.m
+
+
+h1 = x1 - x0;
+h2 = x2 - x1;
+h3 = x3 - x2;
+
+%????????? ??????
+
+a1 = y0;
+a2 = y1;
+a3 = y2;
+
+
+l1 = 0;
+l4 = 0;
+
+
+%coeff eval
+_a = 2 * (h1 + h2);
+_b = h2;
+_c = 6 * ( ((y2 - y1) / h2) - ((y1 - y0)/h1) );
+
+_a1 = h2;
+_b1 = 2 * (h2 + h3);
+
+_c1 = 6 * ( ((y3 - y2) / h3) - ((y2 - y1)/h2) );
+
+l3 = (_c1 - (( _a1 * _c ) / _a)) / ( _b1 - (_b / _a) );
+
+l2 = (_c - _b * l3 ) / _a;
+
+
+b1 = ((y1 - y0)/h1 ) - (h1/6 )* (l2 + 2*l1);
+b2 = ((y2 - y1)/h2 ) - (h2/6 )* (l3 + 2*l2);
+b3 = ((y3 - y2)/h3 ) - (h3/6 )* (l4 + 2*l3);
+
+c1 = 0;
+c2 = l2/2;
+c3 = l3 / 2;
+c4 = 0;
+
+d1 =  (l2 - l1) / (6 * h1);
+d2 = (l3 - l2) / (6 * h2);
+d3 = (l4 - l3) / (6 * h3);
+
+
+%first points 
+
+x0 = round(x0);
+x1 = round(x1);
+x2 = round(x2);
+x3 = round(x3);
+
+
+for i =  x0 : 1 : x1 + 1
+  
+    f =   a1  + b1 *  (i - x0) + c1 * (i - x0) * (i - x0) + d1 * (i - x0) * (i - x0) * (i - x0) ;
+    
+    f = round(f);
+    
+    if f > 0 && f < Y_MAX
+      M(i , f ) = color;
+    end
+  
+end
+  
+for i =  x1 : 1 : x2 + 1
+  
+    f =   a2  + b2 *  (i - x1) + c1 * (i - x1) * (i - x1) + d1 * (i - x1) * (i - x1) * (i - x1) ;
+    
+    f = round(f);
+    
+    if f > 0 && f < Y_MAX
+      M(i , f ) = color;
+    end
+  
+end 
+ 
+ 
+for i =  x2 : 1 : x3 + 1
+  
+    f =   a1  + b1 *  (i - x2) + c1 * (i - x2) * (i - x2) + d1 * (i - x2) * (i - x2) * (i - x2) ;
+    
+    f = round(f);
+    
+    if f > 0 && f < Y_MAX
+      M(i , f ) = color;
+    end
+  
+end
+
+
+------------------------------------
+homework5.m
+
+X_MAX = 100;
+Y_MAX = 200;
+
+Ax = axes('Position',[0.1,0.1,0.8,0.8],'XLim',[0,X_MAX],'YLim',[0,Y_MAX]);
+
+%M = zeros(X_MAX,Y_MAX);
+
+NPOINTS = 5;
+
+try
+  [X,Y] = ginput(NPOINTS);
+catch
+  clear;
+  clc;
+end
+
+%x0 = round(X(1));
+%y0 = round(Y(1));
+%
+%x1 = round(X(2));
+%y1 = round(Y(2));
+%
+%x2 = round(X(3));
+%y2 = round(Y(3));
+%
+%x3 = round(X(4));
+%y3 = round(Y(4));
+
+
+%x0 = 3.0; 
+%x1 = 4.5;
+%x2 = 7.0;
+%x3 = 9.0;
+
+
+%y0 = 2.5;
+%y1 = 1.0;
+%y2 = 2.5;
+%y3 = 0.5; 
+
+
+color = 1;
+colLine = [1,0,0];
+
+%_spline;
+%
+%for i = 1 : X_MAX
+%   for j = 1 : Y_MAX
+%      if M(i,j) == color
+%         rectangle('Position',[i-1,j-1,1,1],'FaceColor',colLine);
+%     end
+%  end
+%end
+
+
+
+xf = [X(1):1:X(NPOINTS)];
+
+spl = interp1 (X, Y,xf ,'spline');
+spl = spline (X, Y, xf);
+
+hold on;
+plot(spl,'b');
+
+
+
+
+%iteractive movement
+
+%i = input("which x to move");
+
+[newX,newY] = ginput(1);
+
+X(1) = newX;
+Y(1) = newY;
+
+
+%switch(xi)
+%
+%    case 1 
+%    x0 = round(newX(1));
+%    y0 = round(newY(1));
+%    
+%    case 2 
+%    x1 = round(newX(1));
+%    y1 = round(newY(1));
+%    
+%    case 3 
+%    x2 = round(newX(1));
+%    y2 = round(newY(1));
+%    
+%    case 4 
+%    x3 = round(newX(1));
+%    y3 = round(newY(1));
+%    
+%    otherwise 
+%        printf("wrong input!!!");
+%        return
+%        
+%endswitch   
+  
+  
+colLine = [0,0,1];
+color = 2;
+ 
+%spline;    
+%  
+%for i = 1 : X_MAX
+%   for j = 1 : Y_MAX
+%      if M(i,j) == color
+%         rectangle('Position',[i-1,j-1,1,1],'FaceColor',colLine);
+%     end
+%  end
+%end
+
+xf = [X(1):1:X(NPOINTS)];
+
+ spl = interp1 (X, Y,xf ,'spline');
+spl = spline (X, Y,xf);
+
+hold on;
+plot(spl,'b');
+
+
+--------------------------------------------------------------------------
+BresenhamCircle2.m
+
+
+x = 0;
+y = R;
+d = 3 - 2*R;
+
+if(yc+R <= MaxY)
+    M(xc,yc+R) = borderColor;
+end
+
+if(xc+R <= MaxX)
+    M(xc+R,yc) = borderColor;
+end
+
+if(xc-R >= 1)
+    M(xc-R,yc) = borderColor;
+end
+
+if(yc - R >= MaxY)
+    M(xc,yc- R) = borderColor;
+end
+
+while true
+   
+    if(d > -y)
+        y = y -1;
+        d = d + 1 - 2*y;
+    end
+    
+    if(d <= x)
+        x = x + 1;
+        d = d + 1 + 2*x;
+    end
+    
+    if( y == 0)
+        break;
+    end
+    
+    if((xc + x <= MaxX) && (yc + y <= MaxY))
+        M(xc + x,yc + y) = borderColor;
+    end
+    
+    if((xc + x <= MaxX) && (yc - y >= 1))
+        M(xc + x ,yc - y) = borderColor;
+    end
+    
+    if((xc - x >= 1) && (yc + y <= MaxY)) 
+        M(xc - x ,yc + y) = borderColor;
+    end
+    
+    if((xc - x >= 1) && (yc - y >= 1))
+        M(xc - x,yc - y) = borderColor;
+    end
+    
+end
+----------------------------------------------------------------------------------
+DrawLine.m
+
+for i = leftX : rightX
+      M(i,newY) = fillValue;
+      rectangle('Position',[i-1,newY-1,1,1],'FaceColor','r');
+end
+-------------------------------------------------------------------------------------
+
+Fone.m 
+
+
+
+stack = [x,y];
+max=3;
+while (length(stack) ~= 0)
+  
+    newY = stack(end);
+    stack(end) = [];
+    
+    newX = stack(end);
+    stack(end) = [];
+    
+    if(M(newX, newY) == borderColor)
+        continue;    
+    end
+   
+   rightX=newX;
+   leftX = rightX;
+   
+   
+   while (leftX > 1 && (M(leftX - 1, newY) ~= borderColor ))
+     leftX = leftX - 1;
+   end
+   
+   while ( rightX < MaxX - 1 && (M(rightX + 1 , newY) ~= borderColor))
+     rightX = rightX + 1;
+   end
+ 
+  if( newY > 1 && newY < MaxY && newX > 1 && newX < MaxX) 
+    DrawLine;
+   end
+   
+   for nextY = (newY - 1): 2 :(newY + 2)
+      
+      if (nextY < MaxY && nextY > 0)
+          p1 = M(leftX, nextY);
+      else
+          p1 = borderColor;      
+      end
+        
+      for x2 = leftX : rightX
+        
+          if ((x2 + 1 < MaxX) && (nextY < MaxY) && (nextY > 0))
+            p2 = M(x2 + 1, nextY);
+          else
+            p2 = borderColor;      
+          end            
+          
+          if((p1 ~= borderColor) && (p1 ~= fillValue) && (p2 == borderColor))
+              stack(end + 1) = x2;
+              stack(end + 1) = nextY;          
+          end
+          
+          p1 = p2;
+          
+      end
+      
+   end
+   
+end
+
+---------------------------------------------------------------
+homework3.m
+
+
+MaxX = 50;
+MaxY = 50;
+M = zeros(MaxX,MaxY);
+
+borderColor = 1;
+fillValue = 2;
+
+
+Ax = axes('Position',[0.1,0.1,0.8,0.8],'XLim',[0,MaxX],'YLim',[0,MaxY]);
+
+
+numCircles = 2;
+max=3;
+while(max)
+while(numCircles)
+    try
+        [X,Y] = ginput(2);
+    catch
+        clear;
+        clc;
+        break;
+    end
+    
+    
+    xc = round(X(1));
+    yc = round(Y(1));
+
+    Rx = round(X(2));
+    Ry = round(Y(2));
+
+    R = round(sqrt((Rx - xc)*(Rx-xc) + (Ry - yc)*(Ry-yc)));
+
+    BresenhamCircle2;
+
+    for i = 1 : MaxX
+        for j = 1 : MaxY
+            if M(i,j) == borderColor
+                rectangle('Position',[i-1,j-1,1,1],'FaceColor','b');
+            end
+        end
+      hold on;
+    end
+    
+    numCircles = numCircles - 1;
+    
+end
+[x,y] = ginput(1);
+
+x = round(x);
+y = round(y);
+
+Fone;
+max=max-1;
+end
